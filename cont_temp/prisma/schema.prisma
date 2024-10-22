@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,243 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model conference_image {
+  id                Int                @id @default(autoincrement())
+  space_id          Int?
+  name              String             @db.VarChar
+  description       String?            @db.VarChar
+  path              String             @db.VarChar
+  size              Int?
+  format            String             @db.VarChar
+  created_at        DateTime?          @default(now()) @db.Timestamp(6)
+  updated_at        DateTime?          @default(now()) @db.Timestamp(6)
+  conference_spaces conference_spaces? @relation(fields: [space_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model conference_reservations {
+  id                     Int                      @id @default(autoincrement())
+  conference_space_id    Int?
+  user_id                Int?
+  password               Int?
+  start_time             DateTime                 @db.Timestamp(6)
+  end_time               DateTime                 @db.Timestamp(6)
+  purpose                String                   @db.VarChar
+  status                 reservation_status
+  options                Json?
+  created_at             DateTime?                @default(now()) @db.Timestamp(6)
+  updated_at             DateTime?                @default(now()) @db.Timestamp(6)
+  conference_spaces      conference_spaces?       @relation(fields: [conference_space_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                  users?                   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  payment_requests       payment_requests[]
+  team_reservation_share team_reservation_share[]
+}
+
+model conference_reviews {
+  id                  Int                @id @default(autoincrement())
+  conference_space_id Int?
+  user_id             Int?
+  rating              Int
+  comment             String             @db.VarChar
+  image_url           String?            @db.VarChar
+  created_at          DateTime?          @default(now()) @db.Timestamp(6)
+  updated_at          DateTime?          @default(now()) @db.Timestamp(6)
+  conference_spaces   conference_spaces? @relation(fields: [conference_space_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users               users?             @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  review_image        review_image[]
+}
+
+model conference_spaces {
+  id                      Int                       @id @default(autoincrement())
+  name                    String                    @db.VarChar
+  description             String                    @db.VarChar
+  capacity                Int
+  min_time                Int
+  max_time                Int
+  price                   Int
+  image_url               String?                   @db.VarChar
+  created_at              DateTime?                 @default(now()) @db.Timestamp(6)
+  updated_at              DateTime?                 @default(now()) @db.Timestamp(6)
+  conference_image        conference_image[]
+  conference_reservations conference_reservations[]
+  conference_reviews      conference_reviews[]
+}
+
+model gallery_image {
+  id             Int             @id @default(autoincrement())
+  space_id       Int?
+  name           String          @db.VarChar
+  description    String?         @db.VarChar
+  path           String          @db.VarChar
+  size           Int?
+  format         String          @db.VarChar
+  created_at     DateTime?       @default(now()) @db.Timestamp(6)
+  updated_at     DateTime?       @default(now()) @db.Timestamp(6)
+  gallery_spaces gallery_spaces? @relation(fields: [space_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model gallery_reservations {
+  id               Int                @id @default(autoincrement())
+  gallery_space_id Int?
+  user_id          Int?
+  password         Int?
+  start_date       DateTime           @db.Timestamp(6)
+  end_date         DateTime           @db.Timestamp(6)
+  purpose          String             @db.VarChar
+  status           reservation_status
+  created_at       DateTime?          @default(now()) @db.Timestamp(6)
+  updated_at       DateTime?          @default(now()) @db.Timestamp(6)
+  gallery_spaces   gallery_spaces?    @relation(fields: [gallery_space_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users            users?             @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model gallery_spaces {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar
+  description          String                 @db.VarChar
+  pen_name             String                 @db.VarChar
+  start_date           DateTime               @db.Timestamp(6)
+  end_date             DateTime               @db.Timestamp(6)
+  image_url            String?                @db.VarChar
+  created_at           DateTime?              @default(now()) @db.Timestamp(6)
+  updated_at           DateTime?              @default(now()) @db.Timestamp(6)
+  gallery_image        gallery_image[]
+  gallery_reservations gallery_reservations[]
+}
+
+model option_items {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar
+  description String?   @db.VarChar
+  price       Int?
+  is_required Boolean
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model payment_requests {
+  id                      Int                      @id @default(autoincrement())
+  reservation_id          Int?
+  requested_by_user_id    Int?
+  requested_by_team_id    Int?
+  team_id                 Int?
+  status                  payment_status
+  requested_at            DateTime?                @default(now()) @db.Timestamp(6)
+  updated_at              DateTime?                @default(now()) @db.Timestamp(6)
+  team_members            team_members?            @relation(fields: [requested_by_user_id, requested_by_team_id], references: [user_id, team_id], onDelete: NoAction, onUpdate: NoAction)
+  conference_reservations conference_reservations? @relation(fields: [reservation_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  teams                   teams?                   @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model review_image {
+  id                 Int                 @id @default(autoincrement())
+  review_id          Int?
+  name               String              @db.VarChar
+  description        String?             @db.VarChar
+  path               String              @db.VarChar
+  size               Int?
+  format             String              @db.VarChar
+  created_at         DateTime?           @default(now()) @db.Timestamp(6)
+  updated_at         DateTime?           @default(now()) @db.Timestamp(6)
+  conference_reviews conference_reviews? @relation(fields: [review_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model team_image {
+  id          Int       @id @default(autoincrement())
+  team_id     Int?
+  name        String    @db.VarChar
+  description String?   @db.VarChar
+  path        String    @db.VarChar
+  size        Int?
+  format      String    @db.VarChar
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @db.Timestamp(6)
+  teams       teams?    @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model team_members {
+  user_id          Int
+  team_id          Int
+  role             team_member_role
+  joined_at        DateTime?          @default(now()) @db.Timestamp(6)
+  payment_requests payment_requests[]
+  teams            teams              @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users            users              @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, team_id])
+}
+
+model team_payment_methods {
+  id          Int       @id @default(autoincrement())
+  team_id     Int?
+  method_name String    @db.VarChar
+  details     Json
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @db.Timestamp(6)
+  teams       teams?    @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model team_reservation_share {
+  reservation_id          Int
+  team_id                 Int
+  shared_at               DateTime?               @default(now()) @db.Timestamp(6)
+  conference_reservations conference_reservations @relation(fields: [reservation_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  teams                   teams                   @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([reservation_id, team_id])
+}
+
+model teams {
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @db.VarChar
+  description            String                   @db.VarChar
+  image_url              String?                  @db.VarChar
+  created_at             DateTime?                @default(now()) @db.Timestamp(6)
+  updated_at             DateTime?                @default(now()) @db.Timestamp(6)
+  payment_requests       payment_requests[]
+  team_image             team_image[]
+  team_members           team_members[]
+  team_payment_methods   team_payment_methods[]
+  team_reservation_share team_reservation_share[]
+}
+
+model users {
+  id                      Int                       @id @default(autoincrement())
+  email                   String                    @unique @db.VarChar
+  hashed_password         String                    @db.VarChar
+  name                    String                    @db.VarChar
+  phone_number            String                    @unique @db.VarChar
+  company_name            String?                   @db.VarChar
+  profile_image           String?                   @db.VarChar
+  role                    user_role
+  created_at              DateTime?                 @default(now()) @db.Timestamp(6)
+  updated_at              DateTime?                 @default(now()) @db.Timestamp(6)
+  conference_reservations conference_reservations[]
+  conference_reviews      conference_reviews[]
+  gallery_reservations    gallery_reservations[]
+  team_members            team_members[]
+}
+
+enum payment_status {
+  pending
+  approved
+  rejected
+}
+
+enum reservation_status {
+  pending
+  approved
+  rejected
+  cancelled
+}
+
+enum team_member_role {
+  leader
+  member
+}
+
+enum user_role {
+  user
+  admin
 }
