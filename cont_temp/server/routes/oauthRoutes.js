@@ -9,10 +9,7 @@ const router = express.Router();
 
 // 네이버 로그인 요청 (네이버 로그인 페이지로 리디렉션)
 router.get("/naver", (req, res) => {
-  const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&
-  client_id=${process.env.NAVER_CLIENT_ID}&
-  redirect_uri=${process.env.NAVER_REDIRECT_URI}&
-  state=${process.env.NAVER_STATE}`;
+  const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${process.env.NAVER_CLIENT_ID}&redirect_uri=${process.env.NAVER_REDIRECT_URI}&state=${process.env.NAVER_STATE}`;
 
   res.redirect(naverAuthUrl);
 });
