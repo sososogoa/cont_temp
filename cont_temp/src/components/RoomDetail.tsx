@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { getRoomById } from "../api/roomsAPI";
+import { getReviewsByRoomId } from "../api/reviewsAPI";
 import { Room } from "../types/Room";
 import { RoomOption } from "../types/RoomOption";
+import { Review } from "../types/Review";
 
-interface RoomDetailProps {
-  roomId: number;
-}
-
-const RoomDetail = ({ roomId }: RoomDetailProps) => {
+const RoomDetail = () => {
+  const { id } = useParams<{ id: string }>();
+  const roomId = parseInt(id ?? "0");
   const [room, setRoom] = useState<Room | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState<boolean>(true);
+  const [reviewsError, setReviewsError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRoom = async () => {
@@ -25,6 +29,21 @@ const RoomDetail = ({ roomId }: RoomDetailProps) => {
     };
 
     fetchRoom();
+  }, [roomId]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const reviewsData = await getReviewsByRoomId(roomId);
+        setReviews(reviewsData);
+        setReviewsLoading(false);
+      } catch (error) {
+        setReviewsError(`리뷰를 불러오는 중 오류가 발생했습니다 : ${error}`);
+        setReviewsLoading(false);
+      }
+    };
+
+    fetchReviews();
   }, [roomId]);
 
   if (loading) return <p>Loading...</p>;
@@ -60,6 +79,30 @@ const RoomDetail = ({ roomId }: RoomDetailProps) => {
           <p>선택 가능한 옵션이 없습니다.</p>
         )}
       </ul>
+
+      <hr />
+      <div>
+        <h3>리뷰</h3>
+        {reviewsLoading ? (
+          <p>리뷰를 불러오는 중입니다...</p>
+        ) : reviewsError ? (
+          <p>{reviewsError}</p>
+        ) : reviews.length > 0 ? (
+          <ul>
+            {reviews.map((review) => (
+              <li key={review.id}>
+                <strong>평점: {review.rating}</strong>
+                <p>{review.comment}</p>
+                {review.image_url && (
+                  <img src={review.image_url} alt="리뷰 이미지" />
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>리뷰가 없습니다.</p>
+        )}
+      </div>
     </div>
   ) : (
     <p>호실 정보가 없습니다.</p>

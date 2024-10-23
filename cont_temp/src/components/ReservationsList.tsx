@@ -22,18 +22,18 @@ const ReservationsList = () => {
     fetchReservations();
   }, []);
 
-  const handleCancelReservation = async (reservationId: number) => {
-    try {
-      await cancelReservation(reservationId);
-      setReservations(
-        reservations.filter(
-          (reservation) => reservation.reserve_id !== reservationId
-        )
-      );
-    } catch (error) {
-      setError(`예약을 취소하는 중 오류가 발생했습니다 : ${error}`);
-    }
-  };
+  // const handleCancelReservation = async (reservationId: number) => {
+  //   try {
+  //     await cancelReservation(reservationId);
+  //     setReservations(
+  //       reservations.filter(
+  //         (reservation) => reservation.reserve_id !== reservationId
+  //       )
+  //     );
+  //   } catch (error) {
+  //     setError(`예약을 취소하는 중 오류가 발생했습니다 : ${error}`);
+  //   }
+  // };
 
   if (loading) return <p>로딩 중...</p>;
   if (error) return <p>{error}</p>;

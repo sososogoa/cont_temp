@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAllReviews, deleteReview } from "../api/reviewsAPI";
+import { Link } from "react-router-dom";
+import { getAllReviews } from "../api/reviewsAPI";
 import { Review } from "../types/Review";
 
 const ReviewsList = () => {
@@ -22,15 +23,6 @@ const ReviewsList = () => {
     fetchReviews();
   }, []);
 
-  const handleDeleteReview = async (reviewId: number) => {
-    try {
-      await deleteReview(reviewId);
-      setReviews(reviews.filter((review) => review.id !== reviewId));
-    } catch (error) {
-      setError(`리뷰 를 삭제하는 중 오류가 발생했습니다 : ${error}`);
-    }
-  };
-
   if (loading) return <p>로딩 중...</p>;
   if (error) return <p>{error}</p>;
 
@@ -44,7 +36,6 @@ const ReviewsList = () => {
             {review.image_url && (
               <img src={review.image_url} alt="리뷰 이미지" />
             )}
-            {/* <button onClick={() => handleDeleteReview(review.id)}>삭제</button> */}
           </li>
         ))}
       </ul>

@@ -48,6 +48,8 @@ import ReservationsList from "./components/ReservationsList";
 import RoomDetail from "./components/RoomDetail";
 import ReviewDetail from "./components/ReviewDetail";
 import ReservationDetail from "./components/ReservationDetail";
+import Naver from "./components/Naver";
+import Home from "./components/Home";
 
 const App = () => {
   return (
@@ -58,18 +60,20 @@ const App = () => {
             <li>
               <Link to="/rooms">호실 목록</Link>
             </li>
-            <li>
+            {/* <li>
               <Link to="/reviews">리뷰 목록</Link>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <Link to="/reservations">예약 목록</Link>
-            </li>
+            </li> */}
           </ul>
         </nav>
 
         <hr />
 
         <Routes>
+          <Route path="/home" element={<Home />} />
+          <Route path="/naver" element={<Naver />} />
           {/* 방 목록 */}
           <Route path="/rooms" element={<RoomsList />} />
           {/* 리뷰 목록 */}
@@ -77,32 +81,11 @@ const App = () => {
           {/* 예약 목록 */}
           <Route path="/reservations" element={<ReservationsList />} />
           {/* 특정 방의 세부 정보 */}
-          <Route
-            path="/rooms/:id"
-            element={
-              <RoomDetail
-                roomId={parseInt(window.location.pathname.split("/")[2])}
-              />
-            }
-          />
+          <Route path="/rooms/:id" element={<RoomDetail />} />
           {/* 특정 방의 리뷰 목록 */}
-          <Route
-            path="/reviews/room/:roomId"
-            element={
-              <ReviewDetail
-                roomId={parseInt(window.location.pathname.split("/")[3])}
-              />
-            }
-          />
+          <Route path="/reviews/room/:roomId" element={<ReviewDetail />} />
           {/* 특정 방의 예약 목록 */}
-          <Route
-            path="/reservations/:reservationId"
-            element={
-              <ReservationDetail
-                reservationId={parseInt(window.location.pathname.split("/")[3])}
-              />
-            }
-          />
+          <Route path="/reservations/:reservationId" element={<ReservationDetail />} />
         </Routes>
       </div>
     </Router>

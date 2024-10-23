@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { getReservationById } from "../api/reservationsAPI";
 import { Reservation } from "../types/Reservation";
 
-interface ReservationDetailProps {
-  reservationId: number;
-}
-
-const ReservationDetail = ({ reservationId }: ReservationDetailProps) => {
+const ReservationDetail = () => {
+  const { id } = useParams<{ id: string }>();
+  const reservationId = parseInt(id ?? "0");
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

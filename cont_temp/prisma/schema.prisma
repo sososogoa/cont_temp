@@ -24,6 +24,29 @@ model User {
   RoomReview         RoomReview[]
 }
 
+// model User {
+//   user_id      Int           @id @default(autoincrement())
+//   email        String        @unique
+//   name         String
+//   phone_number String
+//   role         Role          @default(user)
+//   created_at   DateTime      @default(now())
+//   updated_at   DateTime      @updatedAt
+//   RoomReserve  RoomReserve[]
+//   RoomReview   RoomReview[]
+//   SocialLogin  SocialLogin[]
+// }
+
+// model SocialLogin {
+//   social_login_id    Int       @id @default(autoincrement())
+//   provider           String
+//   social_id          String
+//   authorization_code String
+//   access_token       String
+//   user               User      @relation(fields: [user_id], references: [user_id])
+//   user_id            Int
+// }
+
 // 사용자 역할 ENUM
 enum Role {
   user

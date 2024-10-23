@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { getReviewsByRoomId } from "../api/reviewsAPI";
 import { Review } from "../types/Review";
 
-interface ReviewDetailProps {
-  roomId: number;
-}
-
-const ReviewDetail = ({ roomId }: ReviewDetailProps) => {
+const ReviewDetail = () => {
+  const { id } = useParams<{ id: string }>();
+  const roomId = parseInt(id ?? "0");
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +35,9 @@ const ReviewDetail = ({ roomId }: ReviewDetailProps) => {
         {reviews.map((review) => (
           <li key={review.id}>
             평점: {review.rating}, 내용: {review.comment}
-            {review.image_url && <img src={review.image_url} alt="리뷰 이미지" />}
+            {review.image_url && (
+              <img src={review.image_url} alt="리뷰 이미지" />
+            )}
           </li>
         ))}
       </ul>

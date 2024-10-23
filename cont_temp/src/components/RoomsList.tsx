@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAllRooms, deleteRoom } from "../api/roomsAPI";
+import { Link } from "react-router-dom";
+import { getAllRooms } from "../api/roomsAPI";
 import { Room } from "../types/Room";
 
 const RoomsList = () => {
@@ -22,15 +23,6 @@ const RoomsList = () => {
     fetchRooms();
   }, []);
 
-  const handleDeleteRoom = async (roomId: number) => {
-    try {
-      await deleteRoom(roomId);
-      setRooms(rooms.filter((room) => room.room_id !== roomId));
-    } catch (error) {
-      setError(`호실을 삭제하는 중 오류가 발생했습니다 : ${error}`);
-    }
-  };
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -40,8 +32,9 @@ const RoomsList = () => {
       <ul>
         {rooms.map((room) => (
           <li key={room.room_id}>
-            {room.name}
-            {/* <button onClick={() => handleDeleteRoom(room.room_id)}>삭제</button> */}
+            <Link to={`/rooms/${room.room_id}`}>
+              {room.name} / {room.room_id}
+            </Link>
           </li>
         ))}
       </ul>
