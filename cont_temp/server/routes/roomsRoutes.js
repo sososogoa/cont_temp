@@ -33,7 +33,7 @@ router.get("/rooms/:id", async (req, res) => {
     if (!room) {
       return res.status(404).json({ error: "해당 호실을 찾을 수 없습니다." });
     }
-    
+
     res.status(200).json(room);
   } catch (error) {
     res

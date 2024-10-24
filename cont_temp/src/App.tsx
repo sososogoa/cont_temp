@@ -50,43 +50,71 @@ import ReviewDetail from "./components/ReviewDetail";
 import ReservationDetail from "./components/ReservationDetail";
 import Naver from "./components/Naver";
 import Home from "./components/Home";
+import UsersList from "./components/UsersList";
 
 const App = () => {
   return (
     <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/rooms">호실 목록</Link>
-            </li>
-            {/* <li>
-              <Link to="/reviews">리뷰 목록</Link>
-            </li> */}
-            {/* <li>
-              <Link to="/reservations">예약 목록</Link>
-            </li> */}
-          </ul>
+      <div className="min-h-screen bg-gray-100">
+        <nav className="bg-white shadow-md p-4 mb-4">
+          <div className="container mx-auto">
+            <div className="flex space-x-4">
+              {/* <Link
+                to="/home"
+                className="text-blue-600 hover:text-blue-800 font-semibold"
+              >
+                메인
+              </Link> */}
+              <Link
+                to="/rooms"
+                className="text-blue-600 hover:text-blue-800 font-semibold"
+              >
+                호실 목록
+              </Link>
+              <Link
+                to="/users"
+                className="text-blue-600 hover:text-blue-800 font-semibold"
+              >
+                유저 목록
+              </Link>
+              <Link
+                to="/reviews"
+                className="text-blue-600 hover:text-blue-800 font-semibold"
+              >
+                리뷰 목록
+              </Link>
+              <Link
+                to="/reservations"
+                className="text-blue-600 hover:text-blue-800 font-semibold"
+              >
+                예약 목록
+              </Link>
+              <Link
+                to="/naver"
+                className="text-green-600 hover:text-green-800 font-semibold"
+              >
+                로그인
+              </Link>
+            </div>
+          </div>
         </nav>
 
-        <hr />
-
-        <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/naver" element={<Naver />} />
-          {/* 방 목록 */}
-          <Route path="/rooms" element={<RoomsList />} />
-          {/* 리뷰 목록 */}
-          <Route path="/reviews" element={<ReviewsList />} />
-          {/* 예약 목록 */}
-          <Route path="/reservations" element={<ReservationsList />} />
-          {/* 특정 방의 세부 정보 */}
-          <Route path="/rooms/:id" element={<RoomDetail />} />
-          {/* 특정 방의 리뷰 목록 */}
-          <Route path="/reviews/room/:roomId" element={<ReviewDetail />} />
-          {/* 특정 방의 예약 목록 */}
-          <Route path="/reservations/:reservationId" element={<ReservationDetail />} />
-        </Routes>
+        <div className="container mx-auto p-4">
+          <Routes>
+            <Route path="/home" element={<Home />} />
+            <Route path="/naver" element={<Naver />} />
+            <Route path="/rooms" element={<RoomsList />} />
+            <Route path="/users" element={<UsersList />} />
+            <Route path="/reviews" element={<ReviewsList />} />
+            <Route path="/reservations" element={<ReservationsList />} />
+            <Route path="/rooms/:id" element={<RoomDetail />} />
+            <Route path="/reviews/room/:roomId" element={<ReviewDetail />} />
+            <Route
+              path="/reservations/:reservationId"
+              element={<ReservationDetail />}
+            />
+          </Routes>
+        </div>
       </div>
     </Router>
   );

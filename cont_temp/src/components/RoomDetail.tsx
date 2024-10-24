@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { getRoomById } from "../api/roomsAPI";
 import { getReviewsByRoomId } from "../api/reviewsAPI";
 import { Room } from "../types/Room";
-import { RoomOption } from "../types/RoomOption";
 import { Review } from "../types/Review";
 
 const RoomDetail = () => {
@@ -50,55 +49,78 @@ const RoomDetail = () => {
   if (error) return <p>{error}</p>;
 
   return room ? (
-    <div>
-      <h2>{room.name}</h2>
-      <p>{room.description}</p>
-      <p>수용 인원: {room.capacity}</p>
-      <p>가격: {room.price}원</p>
-      <img src={room.image_url} alt={room.name} />
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-2">{room.name}</h2>
+      <p className="text-gray-700 mb-2">{room.description}</p>
+      <p className="font-semibold mb-2">수용 인원: {room.capacity}</p>
+      <p className="font-semibold mb-2">가격: {room.price}원</p>
 
-      <ul>
+      <img src={room.image_url} alt={room.name} className="rounded-lg mb-4" />
+
+      <h3 className="text-lg font-semibold mb-2">옵션 목록</h3>
+      <div>
         {room.RoomOption.length > 0 ? (
-          room.RoomOption.map((roomOption: RoomOption) => (
-            <li key={roomOption.optionItem.id}>
-              {roomOption.optionItem.is_required ? (
-                <strong>필수 옵션:</strong>
-              ) : (
-                <strong>선택 옵션:</strong>
-              )}
-              {roomOption.optionItem.name}{" "}
-              {roomOption.optionItem.is_required
-                ? ""
-                : `: ${roomOption.optionItem.price}원`}
-              {roomOption.optionItem.description && (
-                <p>{roomOption.optionItem.description}</p>
-              )}
-            </li>
-          ))
+          <>
+            {/* 필수 옵션 */}
+            <div className="mb-4">
+              <strong className="text-green-600">필수 옵션</strong>
+              <div>
+                {room.RoomOption.filter(
+                  (option) => option.optionItem.is_required
+                ).map((roomOption) => (
+                  <div key={roomOption.optionItem.id}>
+                    {roomOption.optionItem.name}(
+                    {roomOption.optionItem.description})
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 선택 옵션 */}
+            <div>
+              <strong className="text-blue-600">선택 옵션</strong>
+              <div>
+                {room.RoomOption.filter(
+                  (option) => !option.optionItem.is_required
+                ).map((roomOption) => (
+                  <div key={roomOption.optionItem.id}>
+                    {roomOption.optionItem.name} : {roomOption.optionItem.price}
+                    원
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
         ) : (
           <p>선택 가능한 옵션이 없습니다.</p>
         )}
-      </ul>
+      </div>
 
-      <hr />
-      <div>
-        <h3>리뷰</h3>
+      <hr className="my-4" />
+      <h3 className="text-lg font-semibold mb-2">고객 후기</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {reviewsLoading ? (
           <p>리뷰를 불러오는 중입니다...</p>
         ) : reviewsError ? (
           <p>{reviewsError}</p>
         ) : reviews.length > 0 ? (
-          <ul>
-            {reviews.map((review) => (
-              <li key={review.id}>
-                <strong>평점: {review.rating}</strong>
-                <p>{review.comment}</p>
-                {review.image_url && (
-                  <img src={review.image_url} alt="리뷰 이미지" />
-                )}
-              </li>
-            ))}
-          </ul>
+          reviews.map((review) => (
+            <div
+              key={review.id}
+              className="border rounded-lg shadow-md p-4 bg-white"
+            >
+              <p className="font-semibold">작성자: {review.user.name}</p>
+              <p className="text-yellow-500">평점: {review.rating}</p>
+              <p>{review.comment}</p>
+              {review.image_url && (
+                <img
+                  src={review.image_url}
+                  alt="리뷰 이미지"
+                  className="mt-2 rounded-md"
+                />
+              )}
+            </div>
+          ))
         ) : (
           <p>리뷰가 없습니다.</p>
         )}

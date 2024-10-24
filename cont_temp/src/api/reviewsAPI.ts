@@ -18,6 +18,7 @@ export const getReviewsByRoomId = async (roomId: number): Promise<Review[]> => {
     const response = await axiosInstance.get<Review[]>(
       `/reviews/room/${roomId}`
     );
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(

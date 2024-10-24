@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 async function main() {
   await prisma.roomReview.deleteMany();
   await prisma.roomReserve.deleteMany();
+  await prisma.roomOption.deleteMany();
   await prisma.optionItem.deleteMany();
   await prisma.room.deleteMany();
   await prisma.user.deleteMany();
@@ -12,8 +13,8 @@ async function main() {
 
   const user1 = await prisma.user.create({
     data: {
-      email: "user@example.com",
-      name: "테스트 유저1",
+      email: "user1@example.com",
+      name: "홍길동",
       phone_number: "010-1234-5678",
       role: "user",
       social_provider: "naver",
@@ -25,10 +26,10 @@ async function main() {
 
   const user2 = await prisma.user.create({
     data: {
-      email: "admin@example.com",
-      name: "테스트 관리자1",
+      email: "user2@example.com",
+      name: "김철수",
       phone_number: "010-9876-5432",
-      role: "admin",
+      role: "user",
       social_provider: "naver",
       social_id: "654321",
       authorization_code: "auth-code-654",
@@ -38,8 +39,8 @@ async function main() {
 
   const projector = await prisma.optionItem.create({
     data: {
-      name: "빔 프로젝터 이름",
-      description: "빔 프로젝터 설명",
+      name: "빔 프로젝터",
+      description: "좋은 빔 프로젝터입니다.",
       price: 100000,
       is_required: false,
     },
@@ -47,8 +48,8 @@ async function main() {
 
   const microphone = await prisma.optionItem.create({
     data: {
-      name: "마이크 이름",
-      description: "무선 마이크 설명",
+      name: "마이크",
+      description: "좋은 마이크입니다.",
       price: 10000,
       is_required: false,
     },
@@ -56,8 +57,8 @@ async function main() {
 
   const laptop = await prisma.optionItem.create({
     data: {
-      name: "노트북 이름",
-      description: "노트북 설명",
+      name: "노트북",
+      description: "좋은 노트북입니다.",
       price: 50000,
       is_required: false,
     },
@@ -65,32 +66,32 @@ async function main() {
 
   const table1 = await prisma.optionItem.create({
     data: {
-      name: "테이블 배치 1 이름",
-      description: "테이블 1 배치 설명",
+      name: "테이블 배치",
+      description: "회의형",
       is_required: true,
     },
   });
 
   const table2 = await prisma.optionItem.create({
     data: {
-      name: "테이블 배치 2 이름",
-      description: "테이블 2 배치 설명",
+      name: "테이블 배치",
+      description: "U자형",
       is_required: true,
     },
   });
 
   const table3 = await prisma.optionItem.create({
     data: {
-      name: "테이블 배치 3 이름",
-      description: "테이블 3 배치 설명",
+      name: "테이블 배치",
+      description: "원형",
       is_required: true,
     },
   });
 
   const room1 = await prisma.room.create({
     data: {
-      name: "A 회의실 이름",
-      description: "A 회의실 설명",
+      name: "월아",
+      description: "넓은 회의실",
       capacity: 15,
       min_time: 2,
       max_time: 8,
@@ -115,8 +116,8 @@ async function main() {
 
   const room2 = await prisma.room.create({
     data: {
-      name: "B 회의실 이름",
-      description: "B 회의실 설명",
+      name: "미타",
+      description: "좋은 회의실",
       capacity: 30,
       min_time: 4,
       max_time: 9,
@@ -141,8 +142,8 @@ async function main() {
 
   const room3 = await prisma.room.create({
     data: {
-      name: "C 회의실 이름",
-      description: "C 회의실 설명",
+      name: "마들",
+      description: "아주 좋은 회의실",
       capacity: 100,
       min_time: 12,
       max_time: 24,

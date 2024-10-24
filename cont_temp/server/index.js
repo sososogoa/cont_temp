@@ -37,3 +37,8 @@ app.use("/api", userRouter);
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
+// const myIP = "192.168.0.27";
+// app.listen(port, myIP, () => {
+//   console.log(`Server is running on http://${myIP}:${port}`);
+// });

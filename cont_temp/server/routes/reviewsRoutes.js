@@ -3,10 +3,15 @@ import prisma from "../prisma/context.js";
 
 const router = express.Router();
 
-// 1. 리뷰 목록 조회 (누구나)
+// 1. 리뷰 목록 조회
 router.get("/reviews", async (req, res) => {
   try {
-    const reviews = await prisma.roomReview.findMany();
+    const reviews = await prisma.roomReview.findMany({
+      include: {
+        room: true,
+        user: true,
+      }
+    });
     res.status(200).json(reviews);
   } catch (error) {
     res
@@ -15,12 +20,15 @@ router.get("/reviews", async (req, res) => {
   }
 });
 
-// 2. 특정 호실에 대한 리뷰 조회 (누구나)
+// 2. 특정 호실에 대한 리뷰 조회
 router.get("/reviews/room/:room_id", async (req, res) => {
   const roomId = parseInt(req.params.room_id);
   try {
     const reviews = await prisma.roomReview.findMany({
       where: { room_id: roomId },
+      include: {
+        user: true,
+      },
     });
     res.status(200).json(reviews);
   } catch (error) {
@@ -30,7 +38,7 @@ router.get("/reviews/room/:room_id", async (req, res) => {
   }
 });
 
-// 3. 리뷰 작성 (사용자)
+// 3. 리뷰 작성
 router.post("/reviews", async (req, res) => {
   const { user_id, room_id, rating, comment, image_url } = req.body;
   try {
@@ -49,7 +57,7 @@ router.post("/reviews", async (req, res) => {
   }
 });
 
-// 4. 리뷰 수정 (사용자)
+// 4. 리뷰 수정
 router.put("/reviews/:id", async (req, res) => {
   const reviewId = parseInt(req.params.id);
   const { rating, comment, image_url } = req.body;
@@ -69,7 +77,7 @@ router.put("/reviews/:id", async (req, res) => {
   }
 });
 
-// 5. 리뷰 삭제 (사용자)
+// 5. 리뷰 삭제
 router.delete("/reviews/:id", async (req, res) => {
   const reviewId = parseInt(req.params.id);
 

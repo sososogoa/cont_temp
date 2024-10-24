@@ -1,3 +1,5 @@
+import { Room } from "./Room";
+import { User } from "./User";
 export interface Reservation {
   reserve_id: number;
   user_id: number;
@@ -10,6 +12,8 @@ export interface Reservation {
   options: unknown;
   created_at: string;
   updated_at: string;
+  user: User;
+  room: Room;
 }
 
 export enum ReservationStatus {

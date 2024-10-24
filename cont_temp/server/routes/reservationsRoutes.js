@@ -6,7 +6,12 @@ const router = express.Router();
 // 1. 예약 목록 조회 (누구나)
 router.get("/reservations", async (req, res) => {
   try {
-    const reservations = await prisma.roomReserve.findMany();
+    const reservations = await prisma.roomReserve.findMany({
+      include: {
+        user: true,
+        room: true,
+      },
+    });
     res.status(200).json(reservations);
   } catch (error) {
     res

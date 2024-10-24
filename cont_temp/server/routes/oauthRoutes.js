@@ -18,6 +18,9 @@ router.get("/naver", (req, res) => {
 router.get("/naver/callback", async (req, res) => {
   const { code, state } = req.query;
 
+  console.log("code : " + code);
+  console.log("state : " + state);
+
   if (!code || !state) {
     res.status(400).json({ message: "인증 코드와 상태가 존재하지 않습니다." });
     return;
@@ -37,6 +40,8 @@ router.get("/naver/callback", async (req, res) => {
       }
     );
 
+    console.log(tokenResponse.data);
+
     const accessToken = tokenResponse.data.access_token;
     const refreshToken = tokenResponse.data.refresh_token;
     const expires_in = tokenResponse.data.expires_in;
@@ -50,6 +55,8 @@ router.get("/naver/callback", async (req, res) => {
         },
       }
     );
+
+    console.log(userInfoResponse.data);
 
     const userInfo = userInfoResponse.data.response;
     const token = jwt.sign(userInfo, process.env.JWT_SECRET, {

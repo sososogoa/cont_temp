@@ -27,17 +27,20 @@ const RoomsList = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div>
-      <p>호실 목록</p>
-      <ul>
+    <div className="p-4">
+      <h2 className="text-xl font-bold mb-4">호실 목록</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {rooms.map((room) => (
-          <li key={room.room_id}>
-            <Link to={`/rooms/${room.room_id}`}>
-              {room.name} / {room.room_id}
-            </Link>
-          </li>
+          <Link
+            key={room.room_id}
+            to={`/rooms/${room.room_id}`}
+            className="border rounded-lg shadow-md p-4 bg-white hover:shadow-lg transition-shadow duration-300"
+          >
+            <p className="text-lg font-semibold text-blue-500">{room.name}</p>
+            <p className="text-sm text-gray-500">{room.description}</p>
+          </Link>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

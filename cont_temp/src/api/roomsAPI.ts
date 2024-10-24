@@ -7,7 +7,7 @@ export const getAllRooms = async (): Promise<Room[]> => {
     const response = await axiosInstance.get<Room[]>("/rooms");
     return response.data;
   } catch (error) {
-    console.error("Error fetching rooms:", error);
+    console.error("호실 조회 에러 :", error);
     throw error;
   }
 };

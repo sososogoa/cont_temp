@@ -12,6 +12,7 @@ const ReviewsList = () => {
     const fetchReviews = async () => {
       try {
         const data = await getAllReviews();
+        console.log(data);
         setReviews(data);
         setLoading(false);
       } catch (error) {
@@ -27,18 +28,29 @@ const ReviewsList = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div>
-      <p>리뷰 목록</p>
-      <ul>
+    <div className="p-4">
+      <h2 className="text-xl font-bold mb-4">리뷰 목록</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {reviews.map((review) => (
-          <li key={review.id}>
-            평점: {review.rating}, 내용: {review.comment}
+          <Link
+            key={review.id}
+            to={`/rooms/${review.room_id}`}
+            className="border rounded-lg shadow-md p-4 bg-white hover:shadow-lg transition-shadow duration-300"
+          >
+            <h3 className="text-lg font-semibold">{review.user.name}</h3>
+            <p className="text-sm text-gray-500">호실: {review.room.name}</p>
+            <p className="text-yellow-500">평점: {review.rating}</p>
+            <p className="mt-2">{review.comment}</p>
             {review.image_url && (
-              <img src={review.image_url} alt="리뷰 이미지" />
+              <img
+                src={review.image_url}
+                alt="리뷰 이미지"
+                className="mt-2 rounded-md"
+              />
             )}
-          </li>
+          </Link>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
