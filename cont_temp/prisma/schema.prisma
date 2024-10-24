@@ -12,7 +12,7 @@ model User {
   user_id            Int           @id @default(autoincrement())
   email              String        @unique
   name               String
-  phone_number       String
+  mobile             String
   role               Role          @default(user)
   created_at         DateTime      @default(now())
   updated_at         DateTime      @updatedAt
@@ -70,16 +70,17 @@ model RoomOption {
 
 // 예약
 model RoomReserve {
-  reserve_id    Int               @id @default(autoincrement())
-  user_id       Int
-  room_id       Int
-  temp_password Int
-  start_time    DateTime
-  end_time      DateTime
-  purpose       String
-  status        ReservationStatus
-  created_at    DateTime          @default(now())
-  updated_at    DateTime          @updatedAt
+  reserve_id     Int               @id @default(autoincrement())
+  user_id        Int
+  room_id        Int
+  temp_password  Int
+  reserve_number Int
+  start_time     DateTime
+  end_time       DateTime
+  purpose        String
+  status         ReservationStatus
+  created_at     DateTime          @default(now())
+  updated_at     DateTime          @updatedAt
 
   user User @relation(fields: [user_id], references: [user_id])
   room Room @relation(fields: [room_id], references: [room_id])
@@ -91,20 +92,6 @@ enum ReservationStatus {
   approved
   rejected
   cancelled
-}
-
-// 파일 저장소
-model FileStorage {
-  file_id      Int      @id @default(autoincrement())
-  name         String
-  description  String?
-  path         String
-  size         Int?
-  format       String
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
-  context_type String
-  context_id   Int
 }
 
 // 리뷰

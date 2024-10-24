@@ -4,6 +4,7 @@ import { getRoomById } from "../api/roomsAPI";
 import { getReviewsByRoomId } from "../api/reviewsAPI";
 import { Room } from "../types/Room";
 import { Review } from "../types/Review";
+import StarRating from "./StarRating";
 
 const RoomDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -51,17 +52,15 @@ const RoomDetail = () => {
   return room ? (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-2">{room.name}</h2>
-      <p className="text-gray-700 mb-2">{room.description}</p>
-      <p className="font-semibold mb-2">수용 인원: {room.capacity}</p>
-      <p className="font-semibold mb-2">가격: {room.price}원</p>
+      <p className="mb-2">{room.description}</p>
+      <p className="mb-2">수용 인원: {room.capacity}</p>
+      <p className="mb-2">가격: {room.price}원</p>
 
       <img src={room.image_url} alt={room.name} className="rounded-lg mb-4" />
 
-      <h3 className="text-lg font-semibold mb-2">옵션 목록</h3>
       <div>
         {room.RoomOption.length > 0 ? (
           <>
-            {/* 필수 옵션 */}
             <div className="mb-4">
               <strong className="text-green-600">필수 옵션</strong>
               <div>
@@ -76,7 +75,6 @@ const RoomDetail = () => {
               </div>
             </div>
 
-            {/* 선택 옵션 */}
             <div>
               <strong className="text-blue-600">선택 옵션</strong>
               <div>
@@ -109,8 +107,9 @@ const RoomDetail = () => {
               key={review.id}
               className="border rounded-lg shadow-md p-4 bg-white"
             >
-              <p className="font-semibold">작성자: {review.user.name}</p>
-              <p className="text-yellow-500">평점: {review.rating}</p>
+              <p className="text-yellow-500">
+                <StarRating score={review.rating} />
+              </p>
               <p>{review.comment}</p>
               {review.image_url && (
                 <img

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { getUserInfo } from "../api/usersAPI";
 import { User } from "../types/User";
 
@@ -30,17 +31,52 @@ const Home = () => {
     return <div>오류 : {error}</div>;
   }
 
+  const fadeInVariants = {
+    // hidden: { opacity: 0, y: 20 },
+    // visible: (custom: number) => ({
+    //   opacity: 1,
+    //   y: 0,
+    //   transition: { delay: custom * 0.7 },
+    // }),
+  };
+
   return (
-    <div>
-      {userInfo ? (
-        <div>
-          <h1>{userInfo.name}</h1>
-          <p>{userInfo.email}</p>
-          <p>{userInfo.mobile}</p>
-        </div>
-      ) : (
-        <div>로그인 정보 없음</div>
-      )}
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="text-center">
+        {userInfo ? (
+          <div>
+            <motion.h1
+              className="text-4xl font-bold"
+              variants={fadeInVariants}
+              initial="hidden"
+              animate="visible"
+              custom={0}
+            >
+              {userInfo.name}
+            </motion.h1>
+            <motion.p
+              className="text-2xl"
+              variants={fadeInVariants}
+              initial="hidden"
+              animate="visible"
+              custom={1}
+            >
+              {userInfo.email}
+            </motion.p>
+            <motion.p
+              className="text-2xl"
+              variants={fadeInVariants}
+              initial="hidden"
+              animate="visible"
+              custom={2}
+            >
+              {userInfo.mobile}
+            </motion.p>
+          </div>
+        ) : (
+          <div className="text-xl">로그인 정보 없음</div>
+        )}
+      </div>
     </div>
   );
 };

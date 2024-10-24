@@ -2,40 +2,40 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+function formatToISO(dateString) {
+  const date = new Date(dateString);
+  return date.toISOString();
+}
+
 async function main() {
-  await prisma.roomReview.deleteMany();
-  await prisma.roomReserve.deleteMany();
-  await prisma.roomOption.deleteMany();
-  await prisma.optionItem.deleteMany();
-  await prisma.room.deleteMany();
-  await prisma.user.deleteMany();
-  await prisma.fileStorage.deleteMany();
+  // await prisma.roomReview.deleteMany();
+  // await prisma.roomReserve.deleteMany();
+  // await prisma.roomOption.deleteMany();
+  // await prisma.optionItem.deleteMany();
+  // await prisma.room.deleteMany();
+  // await prisma.user.deleteMany();
 
-  const user1 = await prisma.user.create({
-    data: {
-      email: "user1@example.com",
-      name: "홍길동",
-      phone_number: "010-1234-5678",
-      role: "user",
-      social_provider: "naver",
-      social_id: "123456",
-      authorization_code: "auth-code-123",
-      access_token: "access-token-123",
-    },
-  });
+  const purposes = ["회의", "연회", "전시"];
+  const statuses = ["pending", "approved", "rejected", "cancelled"];
 
-  const user2 = await prisma.user.create({
-    data: {
-      email: "user2@example.com",
-      name: "김철수",
-      phone_number: "010-9876-5432",
-      role: "user",
-      social_provider: "naver",
-      social_id: "654321",
-      authorization_code: "auth-code-654",
-      access_token: "access-token-654",
-    },
-  });
+  const users = [];
+  for (let i = 1; i <= 30; i++) {
+    const user = await prisma.user.create({
+      data: {
+        email: `user${i}@example.com`,
+        name: `사용자${i}`,
+        mobile: `010-${Math.floor(Math.random() * 9000) + 1000}-${
+          Math.floor(Math.random() * 9000) + 1000
+        }`,
+        role: "user",
+        social_provider: "naver",
+        social_id: `social-id-${i}`,
+        authorization_code: `auth-code-${i}`,
+        access_token: `access-token-${i}`,
+      },
+    });
+    users.push(user);
+  }
 
   const projector = await prisma.optionItem.create({
     data: {
@@ -88,130 +88,76 @@ async function main() {
     },
   });
 
-  const room1 = await prisma.room.create({
-    data: {
-      name: "월아",
-      description: "넓은 회의실",
-      capacity: 15,
-      min_time: 2,
-      max_time: 8,
-      price: 70000,
-      image_url: "https://placehold.co/600x400",
-      RoomOption: {
-        create: [
-          {
-            optionItem: {
-              connect: { id: projector.id },
-            },
-          },
-          {
-            optionItem: {
-              connect: { id: table1.id },
-            },
-          },
-        ],
+  const rooms = [];
+  for (let i = 1; i <= 10; i++) {
+    const room = await prisma.room.create({
+      data: {
+        name: `호실 ${i}`,
+        description: `${i}번 호실`,
+        capacity: Math.floor(Math.random() * 50) + 10,
+        min_time: 1,
+        max_time: Math.floor(Math.random() * 10) + 2,
+        price: Math.floor(Math.random() * 100000) + 50000,
+        image_url: `https://placehold.co/600x400?text=Room ${i}`,
+        RoomOption: {
+          create: [
+            { optionItem: { connect: { id: projector.id } } },
+            { optionItem: { connect: { id: table1.id } } },
+            { optionItem: { connect: { id: microphone.id } } },
+          ],
+        },
       },
-    },
-  });
+    });
+    rooms.push(room);
+  }
 
-  const room2 = await prisma.room.create({
-    data: {
-      name: "미타",
-      description: "좋은 회의실",
-      capacity: 30,
-      min_time: 4,
-      max_time: 9,
-      price: 150000,
-      image_url: "https://placehold.co/600x400",
-      RoomOption: {
-        create: [
-          {
-            optionItem: {
-              connect: { id: laptop.id },
-            },
-          },
-          {
-            optionItem: {
-              connect: { id: table2.id },
-            },
-          },
-        ],
+  for (let i = 1; i <= 30; i++) {
+    const user = users[Math.floor(Math.random() * users.length)];
+    const room = rooms[Math.floor(Math.random() * rooms.length)];
+
+    const randomDay = Math.floor(Math.random() * 30) + 1;
+    const randomStartHour = 9 + Math.floor(Math.random() * 9);
+    const randomDuration =
+      Math.floor(Math.random() * (18 - randomStartHour)) + 1;
+
+    const startDate = `2024-10-${String(randomDay).padStart(2, "0")} ${String(
+      randomStartHour
+    ).padStart(2, "0")}:00`;
+    const endDate = `2024-10-${String(randomDay).padStart(2, "0")} ${String(
+      randomStartHour + randomDuration
+    ).padStart(2, "0")}:00`;
+
+    const formattedStartDate = formatToISO(startDate);
+    const formattedEndDate = formatToISO(endDate);
+
+    await prisma.roomReserve.create({
+      data: {
+        user_id: user.user_id,
+        room_id: room.room_id,
+        temp_password: Math.floor(Math.random() * 9000) + 1000,
+        reserve_number: Math.floor(Math.random() * 25) + 3,
+        start_time: formattedStartDate,
+        end_time: formattedEndDate,
+        purpose: purposes[Math.floor(Math.random() * purposes.length)],
+        status: statuses[Math.floor(Math.random() * statuses.length)],
       },
-    },
-  });
+    });
+  }
 
-  const room3 = await prisma.room.create({
-    data: {
-      name: "마들",
-      description: "아주 좋은 회의실",
-      capacity: 100,
-      min_time: 12,
-      max_time: 24,
-      price: 1500000,
-      image_url: "https://placehold.co/600x400",
-      RoomOption: {
-        create: [
-          {
-            optionItem: {
-              connect: { id: microphone.id },
-            },
-          },
-          {
-            optionItem: {
-              connect: { id: laptop.id },
-            },
-          },
-          {
-            optionItem: {
-              connect: { id: table1.id },
-            },
-          },
-        ],
+  for (let i = 1; i <= 50; i++) {
+    const user = users[Math.floor(Math.random() * users.length)];
+    const room = rooms[Math.floor(Math.random() * rooms.length)];
+    const rating = Math.floor(Math.random() * 5) + 1;
+    await prisma.roomReview.create({
+      data: {
+        user_id: user.user_id,
+        room_id: room.room_id,
+        rating: rating,
+        comment: `${rating}점 짜리 리뷰`,
+        image_url: `https://placehold.co/600x400?text=Review ${i}`,
       },
-    },
-  });
-
-  const reservation1 = await prisma.roomReserve.create({
-    data: {
-      user_id: user1.user_id,
-      room_id: room1.room_id,
-      temp_password: 1234,
-      start_time: new Date("2024-10-25T10:00:00"),
-      end_time: new Date("2024-10-25T12:00:00"),
-      purpose: "팀 회의",
-      status: "pending",
-    },
-  });
-
-  await prisma.roomReview.create({
-    data: {
-      user_id: user1.user_id,
-      room_id: room1.room_id,
-      rating: 3,
-      comment: "보통이에요 3점",
-      image_url: "https://placehold.co/600x400",
-    },
-  });
-
-  await prisma.roomReview.create({
-    data: {
-      user_id: user1.user_id,
-      room_id: room2.room_id,
-      rating: 1,
-      comment: "별로에요 1점",
-      image_url: "https://placehold.co/600x400",
-    },
-  });
-
-  await prisma.roomReview.create({
-    data: {
-      user_id: user1.user_id,
-      room_id: room3.room_id,
-      rating: 5,
-      comment: "아주 좋아요 5점",
-      image_url: "https://placehold.co/600x400",
-    },
-  });
+    });
+  }
 }
 
 main()

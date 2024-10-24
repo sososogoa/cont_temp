@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { getAllUsers } from "../api/usersAPI";
 import { User } from "../types/User";
 
@@ -37,9 +36,7 @@ const UsersList = () => {
           >
             <h3 className="text-lg font-semibold">{user.name}</h3>
             <p className="text-sm text-gray-500">이메일: {user.email}</p>
-            <p className="text-sm text-gray-500">
-              전화번호: {user.phone_number}
-            </p>
+            <p className="text-sm text-gray-500">전화번호: {user.mobile}</p>
           </div>
         ))}
       </div>

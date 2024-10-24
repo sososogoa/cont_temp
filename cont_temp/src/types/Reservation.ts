@@ -5,6 +5,7 @@ export interface Reservation {
   user_id: number;
   room_id: number;
   temp_password: number;
+  reserve_number: number;
   start_time: string;
   end_time: string;
   purpose: string;
